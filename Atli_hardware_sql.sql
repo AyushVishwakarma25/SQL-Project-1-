@@ -22,26 +22,10 @@ select unique_products_2020,
 /* 3- Provide a report with all the unique product counts for each segment and
 sort them in descending order of product counts */ 
 
-with T1 as
-( select segment, COUNT(distinct product_code ) AS product_count_2020
-	from gdb023.fact_sales_monthly
-	JOIN gdb023.dim_product using (product_code)
-	where fiscal_year = 2020
-	Group by 1
-	order by 2 asc),
-T2 as 
-( select segment, COUNT(distinct product_code) AS product_count_2021
-	from gdb023.fact_sales_monthly
-	JOIN gdb023.dim_product using (product_code)
-	where fiscal_year = 2021
-	Group by 1
-	order by 2 asc)
-select T1.segment,
-      product_count_2020,
-      product_count_2021,
-      product_count_2020 - product_count_2021 as difference from t1 
-      Join T2 using (segment)
-      order by 4 asc;
+select segment, count(distinct product_code) as unique_products_count
+from dim_product
+group by segment
+order by unique_products_count desc;
       
 /* 4. Follow-up: Which segment had the most increase in unique products in
 2021 vs 2020 */    
